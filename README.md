@@ -1,6 +1,13 @@
 microblog
 =========
 
+## Environment variables
+
+| Variable | Type | Required | Description |
+|---|---|---|---|
+| `DATABASE` | string | yes | Database name (`projects/PROJECT_ID/instances/INSTANCE_ID/databases/DATABASE_ID`) |
+| `PORT` | string | no | default: `"8080"` |
+| `LOG_LEVEL` | string | no | default: `"info"` |
 
 ## Develop with Spanner emulator
 
