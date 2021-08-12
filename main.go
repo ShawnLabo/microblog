@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"cloud.google.com/go/compute/metadata"
 	"cloud.google.com/go/spanner"
 	"github.com/rs/zerolog/log"
 )
@@ -29,16 +30,16 @@ func main() {
 
 	ctx := context.Background()
 
-	var region string
+	var zone string
 
-	if cfg.UseMetadata {
-		md, err := getMetadata(ctx)
+	if metadata.OnGCE() {
+		z, err := metadata.Zone()
 		if err != nil {
-			log.Fatal().Err(err).Msg("failed getMetadata")
+			log.Fatal().Err(err).Msg("failed metadata.Zone()")
 		}
-		region = md.region
+		zone = z
 	} else {
-		region = "dummy-region"
+		zone = "unknown"
 	}
 
 	sc, err := spanner.NewClient(ctx, cfg.Database)
@@ -47,7 +48,7 @@ func main() {
 	}
 
 	ap := &app{
-		region:  region,
+		zone:    zone,
 		spanner: sc,
 	}
 

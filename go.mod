@@ -3,7 +3,7 @@ module github.com/ShawnLabo/microblog
 go 1.16
 
 require (
-	cloud.google.com/go v0.87.0 // indirect
+	cloud.google.com/go v0.87.0
 	cloud.google.com/go/spanner v1.23.0
 	github.com/go-chi/chi/v5 v5.0.3
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect

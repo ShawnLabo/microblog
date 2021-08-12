@@ -42,5 +42,5 @@ hammer create spanner://projects/microblog/instances/microblog/databases/microbl
 Run app with the database on the emulator.
 
 ```bash
-DATABASE=projects/microblog/instances/microblog/databases/microblog USE_METADATA=false go run *.go
+DATABASE=projects/microblog/instances/microblog/databases/microblog go run *.go
 ```

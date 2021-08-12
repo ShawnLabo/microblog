@@ -14,7 +14,7 @@ import (
 )
 
 type app struct {
-	region  string
+	zone    string
 	spanner *spanner.Client
 }
 
@@ -66,11 +66,11 @@ func (ap *app) getMessages(w http.ResponseWriter, r *http.Request) {
 	err := iter.Do(func(row *spanner.Row) error {
 		m := message{}
 
-		if err := row.Columns(&m.ID, &m.CreatedAt, &m.Name, &m.Body, &m.WrittenRegion); err != nil {
+		if err := row.Columns(&m.ID, &m.CreatedAt, &m.Name, &m.Body, &m.WrittenAt); err != nil {
 			return err
 		}
 
-		m.ServerRegion = ap.region
+		m.RespondedAt = ap.zone
 		resp.Messages = append(resp.Messages, m)
 
 		return nil
@@ -106,18 +106,18 @@ func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := &message{
-		ID:            id.String(),
-		CreatedAt:     time.Now(),
-		Name:          req.Name,
-		Body:          req.Body,
-		WrittenRegion: ap.region,
-		ServerRegion:  ap.region,
+		ID:          id.String(),
+		CreatedAt:   time.Now(),
+		Name:        req.Name,
+		Body:        req.Body,
+		WrittenAt:   ap.zone,
+		RespondedAt: ap.zone,
 	}
 
 	m := []*spanner.Mutation{
 		spanner.Insert("Messages",
 			[]string{"MessageId", "CreatedAt", "Name", "Body", "WrittenRegion"},
-			[]interface{}{msg.ID, msg.CreatedAt, msg.Name, msg.Body, msg.WrittenRegion},
+			[]interface{}{msg.ID, msg.CreatedAt, msg.Name, msg.Body, msg.WrittenAt},
 		),
 	}
 
