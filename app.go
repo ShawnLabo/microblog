@@ -116,7 +116,7 @@ func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
 
 	m := []*spanner.Mutation{
 		spanner.Insert("Messages",
-			[]string{"MessageId", "CreatedAt", "Name", "Body", "WrittenRegion"},
+			[]string{"MessageId", "CreatedAt", "Name", "Body", "WrittenAt"},
 			[]interface{}{msg.ID, msg.CreatedAt, msg.Name, msg.Body, msg.WrittenAt},
 		),
 	}
