@@ -22,6 +22,7 @@ func (ap *app) handler() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 
+	r.Get("/", ap.root)
 	r.Get("/ping", ap.ping)
 	r.Get("/liveness", ap.liveness)
 	r.Get("/readiness", ap.readiness)
@@ -31,6 +32,10 @@ func (ap *app) handler() http.Handler {
 	})
 
 	return r
+}
+
+func (ap *app) root(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "ok")
 }
 
 func (ap *app) ping(w http.ResponseWriter, r *http.Request) {
