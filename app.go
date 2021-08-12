@@ -51,6 +51,7 @@ func (ap *app) readiness(w http.ResponseWriter, r *http.Request) {
 }
 
 type getMessagesResponse struct {
+	ServerZone string `json:"server_zone"`
 	Messages []message `json:"messages"`
 }
 
@@ -60,6 +61,7 @@ func (ap *app) getMessages(w http.ResponseWriter, r *http.Request) {
 	iter := ap.spanner.Single().Query(r.Context(), readStmt)
 
 	resp := &getMessagesResponse{
+		ServerZone: ap.zone,
 		Messages: []message{},
 	}
 
@@ -70,7 +72,6 @@ func (ap *app) getMessages(w http.ResponseWriter, r *http.Request) {
 			return err
 		}
 
-		m.RespondedAt = ap.zone
 		resp.Messages = append(resp.Messages, m)
 
 		return nil
@@ -88,6 +89,11 @@ func (ap *app) getMessages(w http.ResponseWriter, r *http.Request) {
 type createMessageRequest struct {
 	Name string `json:"name"`
 	Body string `json:"body"`
+}
+
+type createMessageResponse struct {
+	ServerZone string `json:"server_zone"`
+	Message *message `json:"message"`
 }
 
 func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
@@ -111,7 +117,6 @@ func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
 		Name:        req.Name,
 		Body:        req.Body,
 		WrittenAt:   ap.zone,
-		RespondedAt: ap.zone,
 	}
 
 	m := []*spanner.Mutation{
@@ -128,7 +133,12 @@ func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondJSON(w, http.StatusCreated, msg)
+	resp := &createMessageResponse{
+		ServerZone: ap.zone,
+		Message: msg,
+	}
+
+	respondJSON(w, http.StatusCreated, resp)
 }
 
 func decodeJSONBody(r *http.Request, v interface{}) error {

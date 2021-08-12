@@ -8,5 +8,4 @@ type message struct {
 	Name        string    `json:"name"`
 	Body        string    `json:"body"`
 	WrittenAt   string    `json:"written_at"`
-	RespondedAt string    `json:"responded_at"`
 }
