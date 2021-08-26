@@ -51,8 +51,8 @@ func (ap *app) readiness(w http.ResponseWriter, r *http.Request) {
 }
 
 type getMessagesResponse struct {
-	ServerZone string `json:"server_zone"`
-	Messages []message `json:"messages"`
+	ServerZone string    `json:"server_zone"`
+	Messages   []message `json:"messages"`
 }
 
 var readStmt = spanner.NewStatement("SELECT * FROM Messages ORDER BY CreatedAt DESC LIMIT 100")
@@ -62,7 +62,7 @@ func (ap *app) getMessages(w http.ResponseWriter, r *http.Request) {
 
 	resp := &getMessagesResponse{
 		ServerZone: ap.zone,
-		Messages: []message{},
+		Messages:   []message{},
 	}
 
 	err := iter.Do(func(row *spanner.Row) error {
@@ -92,8 +92,8 @@ type createMessageRequest struct {
 }
 
 type createMessageResponse struct {
-	ServerZone string `json:"server_zone"`
-	Message *message `json:"message"`
+	ServerZone string   `json:"server_zone"`
+	Message    *message `json:"message"`
 }
 
 func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
@@ -112,11 +112,11 @@ func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := &message{
-		ID:          id.String(),
-		CreatedAt:   time.Now(),
-		Name:        req.Name,
-		Body:        req.Body,
-		WrittenAt:   ap.zone,
+		ID:        id.String(),
+		CreatedAt: time.Now(),
+		Name:      req.Name,
+		Body:      req.Body,
+		WrittenAt: ap.zone,
 	}
 
 	m := []*spanner.Mutation{
@@ -135,7 +135,7 @@ func (ap *app) createMessage(w http.ResponseWriter, r *http.Request) {
 
 	resp := &createMessageResponse{
 		ServerZone: ap.zone,
-		Message: msg,
+		Message:    msg,
 	}
 
 	respondJSON(w, http.StatusCreated, resp)
