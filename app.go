@@ -21,6 +21,7 @@ type app struct {
 func (ap *app) handler() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
+	r.Use(logRequest())
 
 	r.Get("/", ap.root)
 	r.Get("/ping", ap.ping)
